@@ -1,4 +1,5 @@
 import csv
+import datetime
 from typing import List
 
 from models.models import Location, Trip
@@ -47,12 +48,15 @@ class LocationWarehouse:
                 min_diff = diff
                 closest_location = location
 
+        # print(min_diff/10000000)
         return closest_location
 
 
 class TripWarehouse:
 
     trips: List[Trip] = []
+    start_date: datetime.date = datetime.datetime.strptime('02/01/2019', '%m/%d/%Y').date()
+    end_date: datetime.date = datetime.datetime.strptime('02/15/2019', '%m/%d/%Y').date()
 
     def generate_trip_list(self, input_json, location_warehouse: LocationWarehouse):
         for node in input_json:
@@ -64,11 +68,15 @@ class TripWarehouse:
                 end_lat = MathFunctions.lat_fix(sub_node['endLocation']['latitudeE7'])
                 end_long = MathFunctions.long_fix(sub_node['endLocation']['longitudeE7'])
                 distance = sub_node['distance']
+                date = sub_node['duration']['startTimestampMs']
                 trip = Trip(start_lat, start_long, end_lat, end_long, distance)
 
                 trip.start_location = location_warehouse.find_location(start_lat, start_long)
                 trip.end_location = location_warehouse.find_location(end_lat, end_long)
-                self.trips.append(trip)
+                trip.date = date
+
+                if self.start_date <= trip.date <= self.end_date:
+                    self.trips.append(trip)
 
     def show_trips(self):
         for trip in self.trips:
@@ -84,7 +92,8 @@ class TripWarehouse:
                     trip.start_location.address,
                     trip.end_location.name,
                     trip.end_location.address,
-                    trip.distance
+                    trip.distance,
+                    trip.date
                 ])
 
 

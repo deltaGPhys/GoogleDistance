@@ -1,3 +1,4 @@
+import datetime
 from statistics import mean
 from typing import List
 
@@ -31,6 +32,8 @@ class Location:
 
     @long.setter
     def long(self, new_long: int):
+        if new_long > 1800000000:
+            new_long = new_long - 4294967296
         self.long_set.append(new_long)
         self._long = round(mean(x for x in self.long_set))
 
@@ -51,8 +54,17 @@ class Trip:
         self.start_location = None
         self.end_location = None
         self.distance: float = round(distance/1609.34,2)
+        self._date: datetime.date = None
+
+    @property
+    def date(self) -> datetime.date:
+        return self._date
+
+    @date.setter
+    def date(self, timestamp: str):
+        self._date = datetime.date.fromtimestamp(int(timestamp)/1000)
 
     def __str__(self):
-        return f'{self.start_location.name} to {self.end_location.name} - {self.distance} mi'
+        return f'{self.start_location.name} to {self.end_location.name} on {self._date} - {self.distance} mi'
 
 

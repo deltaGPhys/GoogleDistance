@@ -23,6 +23,7 @@ class MathFunctions:
             num = num - 4294967296
         return num
 
+
 class FileFunctions:
 
     @staticmethod
