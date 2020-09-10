@@ -1,7 +1,6 @@
 from statistics import mean
 from typing import List
 
-from views.location_logic import LocationWarehouse
 from views.utils import MathFunctions
 
 
@@ -49,9 +48,9 @@ class Trip:
         self.end_long = end_long
         self.start_location = None
         self.end_location = None
-        self.distance: float = distance/1609.34
+        self.distance: float = round(distance/1609.34,2)
 
     def __str__(self):
-        return f'{self.start_location.name} to {self.endlocation.name} - {self.distance} mi'
+        return f'{self.start_location.name} to {self.end_location.name} - {self.distance} mi'
 
 

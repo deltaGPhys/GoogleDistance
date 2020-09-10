@@ -1,28 +1,7 @@
-import json
 from typing import List
 
 from models.models import Location, Trip
 from views.utils import MathFunctions
-
-
-class FilterFunctions:
-
-    @staticmethod
-    def filter_travel_methods(method: str, data):
-        """ Filter out all but desired travel method
-
-        :param method: the string representing the desired method to keep
-        :param data: json to be filtered
-        :return: json
-        """
-
-        filtered_json = {}
-
-        for node in json:
-            node_type = next(iter(node))
-            # if node_type == "placeVisit" or node_type == "activitySegment" and node["duration"]["activityType"]
-
-        return None
 
 
 class LocationWarehouse:
@@ -62,12 +41,11 @@ class LocationWarehouse:
         closest_location: Location = None
 
         for location in self.locations:
-            diff: float = MathFunctions.calc_distance(lat, location.lat, long, location.long)
+            diff: float = MathFunctions.calc_distance(lat, long, location.lat, location.long)
             if diff < min_diff:
                 min_diff = diff
                 closest_location = location
 
-        print(min_diff)
         return closest_location
 
 
@@ -78,13 +56,13 @@ class TripWarehouse:
     def generate_trip_list(self, input_json, location_warehouse: LocationWarehouse):
         for node in input_json:
             node_type = next(iter(node))
-            if node_type == "activitySegment" and node['activitySegment']['duration']['activityType'] == "IN_PASSENGER_VEHICLE":
+            if node_type == "activitySegment" and node['activitySegment']['activityType'] == "IN_PASSENGER_VEHICLE":
                 sub_node = node['activitySegment']
                 start_lat = sub_node['startLocation']['latitudeE7']
                 start_long = sub_node['startLocation']['longitudeE7']
                 end_lat = sub_node['endLocation']['latitudeE7']
                 end_long = sub_node['endLocation']['longitudeE7']
-                distance = sub_node['duration']['distance']
+                distance = sub_node['distance']
                 trip = Trip(start_lat, start_long, end_lat, end_long, distance)
 
                 trip.start_location = location_warehouse.find_location(start_lat, start_long)
