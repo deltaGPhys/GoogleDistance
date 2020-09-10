@@ -20,6 +20,8 @@ class Location:
 
     @lat.setter
     def lat(self, new_lat: int):
+        if new_lat > 900000000:
+            new_lat = new_lat - 4294967296
         self.lat_set.append(new_lat)
         self._lat = round(mean(x for x in self.lat_set))
 

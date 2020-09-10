@@ -16,20 +16,20 @@ class LocationWarehouse:
                 sub_node = node['placeVisit']
                 address = sub_node['location']['address']
                 name = sub_node['location']['name']
-                lat = sub_node['location']['latitudeE7']
-                long = sub_node['location']['longitudeE7']
+                lat = MathFunctions.lat_fix(sub_node['location']['latitudeE7'])
+                long = MathFunctions.long_fix(sub_node['location']['longitudeE7'])
                 self.get_or_add_location(address, name, lat, long)
 
     def get_or_add_location(self, address: str, name: str, lat: int, long: int) -> Location:
         for loc in self.locations:
             if loc.address == address.replace("\n", " "):
-                loc.lat = lat
-                loc.long = long
+                loc.lat = MathFunctions.lat_fix(lat)
+                loc.long = MathFunctions.long_fix(long)
                 return loc
 
         new_loc = Location(address=address.replace("\n", " "), name=name)
-        new_loc.lat = lat
-        new_loc.long = long
+        new_loc.lat = MathFunctions.lat_fix(lat)
+        new_loc.long = MathFunctions.long_fix(long)
         self.locations.append(new_loc)
         return new_loc
 
@@ -59,10 +59,10 @@ class TripWarehouse:
             node_type = next(iter(node))
             if node_type == "activitySegment" and node['activitySegment']['activityType'] == "IN_PASSENGER_VEHICLE":
                 sub_node = node['activitySegment']
-                start_lat = sub_node['startLocation']['latitudeE7']
-                start_long = sub_node['startLocation']['longitudeE7']
-                end_lat = sub_node['endLocation']['latitudeE7']
-                end_long = sub_node['endLocation']['longitudeE7']
+                start_lat = MathFunctions.lat_fix(sub_node['startLocation']['latitudeE7'])
+                start_long = MathFunctions.long_fix(sub_node['startLocation']['longitudeE7'])
+                end_lat = MathFunctions.lat_fix(sub_node['endLocation']['latitudeE7'])
+                end_long = MathFunctions.long_fix(sub_node['endLocation']['longitudeE7'])
                 distance = sub_node['distance']
                 trip = Trip(start_lat, start_long, end_lat, end_long, distance)
 
