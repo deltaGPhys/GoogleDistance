@@ -1,7 +1,11 @@
 from views.location_logic import LocationWarehouse, TripWarehouse
 from views.utils import FileFunctions
 
-file = "/Users/joshua.gates/Desktop/2019_FEBRUARY.json"
+
+FileFunctions.file_stitcher("/Users/joshua.gates/Desktop/2019", "2019.json")
+
+
+file = "/Users/joshua.gates/Desktop/2019/2019.json"
 
 json = FileFunctions.open_json(file)
 

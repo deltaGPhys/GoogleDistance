@@ -1,4 +1,5 @@
 import json
+import os
 
 
 class MathFunctions:
@@ -36,3 +37,27 @@ class FileFunctions:
     def print_primary_nodes(json):
         for node in json:
             print(next(iter(node)))
+
+    @staticmethod
+    def file_stitcher(folder: str, name: str):
+        files = [i for i in os.listdir(folder) if i.endswith("json") and not i == name]
+
+        mega_file = []
+        file_num = 0
+        for file in files:
+            print(file)
+            f = open(folder+"/"+file).readlines()
+            f = [i.strip('\n') for i in f]
+            if file_num != 0:
+                f = f[2:]
+            if file_num != len(files)-1:
+                f = f[:-2]
+                f[-1] = f[-1] + ","
+            mega_file = mega_file + f
+            file_num = file_num + 1
+
+        output_file = open(folder+"/"+name, 'w')
+
+        output_file.write('\n'.join(mega_file))
+
+        output_file.close()
