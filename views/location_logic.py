@@ -1,3 +1,4 @@
+import csv
 from typing import List
 
 from models.models import Location, Trip
@@ -72,6 +73,20 @@ class TripWarehouse:
     def show_trips(self):
         for trip in self.trips:
             print(trip)
+
+    def save_csv(self, file: str):
+        with open(file, mode='w') as output_file:
+            trip_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+            for trip in self.trips:
+                trip_writer.writerow([
+                    trip.start_location.name,
+                    trip.start_location.address,
+                    trip.end_location.name,
+                    trip.end_location.address,
+                    trip.distance
+                ])
+
 
 
 
