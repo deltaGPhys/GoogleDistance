@@ -1,7 +1,8 @@
 import json
 from typing import List
 
-from models.models import Location
+from models.models import Location, Trip
+from views.utils import MathFunctions
 
 
 class FilterFunctions:
@@ -41,7 +42,7 @@ class LocationWarehouse:
 
     def get_or_add_location(self, address: str, name: str, lat: int, long: int) -> Location:
         for loc in self.locations:
-            if loc.address == address:
+            if loc.address == address.replace("\n", " "):
                 loc.lat = lat
                 loc.long = long
                 return loc
@@ -55,6 +56,45 @@ class LocationWarehouse:
     def show_locations(self):
         for loc in self.locations:
             print(loc)
+
+    def find_location(self, lat:int, long: int) -> Location:
+        min_diff: float = 10000000000.0
+        closest_location: Location = None
+
+        for location in self.locations:
+            diff: float = MathFunctions.calc_distance(lat, location.lat, long, location.long)
+            if diff < min_diff:
+                min_diff = diff
+                closest_location = location
+
+        print(min_diff)
+        return closest_location
+
+
+class TripWarehouse:
+
+    trips: List[Trip] = []
+
+    def generate_trip_list(self, input_json, location_warehouse: LocationWarehouse):
+        for node in input_json:
+            node_type = next(iter(node))
+            if node_type == "activitySegment" and node['activitySegment']['duration']['activityType'] == "IN_PASSENGER_VEHICLE":
+                sub_node = node['activitySegment']
+                start_lat = sub_node['startLocation']['latitudeE7']
+                start_long = sub_node['startLocation']['longitudeE7']
+                end_lat = sub_node['endLocation']['latitudeE7']
+                end_long = sub_node['endLocation']['longitudeE7']
+                distance = sub_node['duration']['distance']
+                trip = Trip(start_lat, start_long, end_lat, end_long, distance)
+
+                trip.start_location = location_warehouse.find_location(start_lat, start_long)
+                trip.end_location = location_warehouse.find_location(end_lat, end_long)
+                self.trips.append(trip)
+
+    def show_trips(self):
+        for trip in self.trips:
+            print(trip)
+
 
 
 

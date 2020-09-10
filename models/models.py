@@ -1,6 +1,7 @@
 from statistics import mean
 from typing import List
 
+from views.location_logic import LocationWarehouse
 from views.utils import MathFunctions
 
 
@@ -39,9 +40,18 @@ class Location:
         return f'{self.name.rstrip() or "<None>"} ({self.address or "<None>"}) <{self.lat}/{self.long}>'
 
 
-class ActivitySegment:
+class Trip:
 
-    def __init__(self, start_location: Location, end_location: Location, distance: int):
-        self.start_location = start_location
-        self.end_location = end_location
+    def __init__(self, start_lat: int, start_long: int, end_lat: int, end_long: int, distance: int):
+        self.start_lat = start_lat
+        self.start_long = start_long
+        self.end_lat = end_lat
+        self.end_long = end_long
+        self.start_location = None
+        self.end_location = None
         self.distance: float = distance/1609.34
+
+    def __str__(self):
+        return f'{self.start_location.name} to {self.endlocation.name} - {self.distance} mi'
+
+
